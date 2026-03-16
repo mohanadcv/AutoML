@@ -69,6 +69,5 @@ addopts = "-v --tb=short"
 pythonpath = ["."]
 
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["src*", "Config*"]
+[tool.setuptools]
+packages = ["src", "src.data_processing", "src.models", "src.models.trainers", "src.visualizations", "src.utils", "Config"]
