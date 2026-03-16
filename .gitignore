@@ -43,7 +43,7 @@ venv.bak/
 
 # Project specific
 experiments/
-models/
+saved_models/
 
 # MLflow
 mlruns/

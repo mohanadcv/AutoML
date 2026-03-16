@@ -15,7 +15,7 @@ class Config:
 
     # PATHS
     BASE_DIR = Path(__file__).resolve().parent.parent
-    MODEL_DIR = BASE_DIR / "models"
+    MODEL_DIR = BASE_DIR / "saved_models"
     EXPERIMENT_DIR = BASE_DIR / "experiments"
 
 
@@ -67,3 +67,4 @@ class Config:
         ]
         for directory in directories:
             directory.mkdir(parents=True, exist_ok=True)
+

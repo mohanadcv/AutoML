@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd
 import numpy as np
-from src.data_processing import PreprocessingPipeline
+from src.data_processing.preprocessing_pipeline import PreprocessingPipeline
 
 
 
