@@ -122,9 +122,10 @@ class HyperparameterTuner:
 
             elif model_name == 'Logistic Regression':
                 return {
-                    'C': [0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
-                    'penalty': ['l1', 'l2'],
-                    'solver': ['lbfgs', 'saga']
+                    'C': [0.01, 0.1, 1, 10, 100],
+                    'solver': ['lbfgs', 'saga'],
+                    'l1_ratio': [0.0, 0.5, 1.0],
+                    'max_iter': [200, 500]
                 }
 
             elif model_name == 'Gradient Boosting':
