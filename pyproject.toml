@@ -70,3 +70,4 @@ addopts = "-v --tb=short"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["src*"]
