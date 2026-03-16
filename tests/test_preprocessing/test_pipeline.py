@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import pandas as pd
 import numpy as np
 from src.data_processing.preprocessing_pipeline import PreprocessingPipeline
+from src.data_processing.preprocessing_pipeline import FrequencyEncoder
 
 
 
@@ -57,7 +58,6 @@ def test_id_column_detection():
 
 def test_frequency_encoding():
     """Test frequency encoding for high-cardinality features."""
-    from src.data_processing import FrequencyEncoder
 
     df = pd.DataFrame({
         'city': ['NYC', 'LA', 'NYC', 'Chicago', 'LA', 'NYC']

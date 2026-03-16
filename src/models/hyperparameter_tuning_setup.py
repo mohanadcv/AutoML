@@ -124,7 +124,7 @@ class HyperparameterTuner:
                 return {
                     'C': [0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
                     'penalty': ['l1', 'l2'],
-                    'solver': ['liblinear', 'saga']
+                    'solver': ['lbfgs', 'saga']
                 }
 
             elif model_name == 'Gradient Boosting':
