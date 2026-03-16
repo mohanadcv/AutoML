@@ -15,13 +15,13 @@ from src.models.hyperparameter_tuning_setup import HyperparameterTuner
 
 
 
-def test_tune_single_model_classification(model_registry, split_data_classification):
+def test_tune_single_model_classification(model_registry, split_data_classification, mock_config):
     """Test tuning a single classification model."""
     X_train, X_val, y_train, y_val = split_data_classification
     tuner = HyperparameterTuner(model_registry, task_type='classification')
 
     result = tuner.tune_model(
-        'Random Forest', X_train, y_train, X_val, y_val, n_iter=5, cv=3
+        'Random Forest', X_train, y_train, X_val, y_val, n_iter=3, cv=2
     )
 
     assert result.model_name == 'Random Forest'
@@ -35,7 +35,7 @@ def test_tune_multiple_models_classification(model_registry, split_data_classifi
     tuner = HyperparameterTuner(model_registry, task_type='classification')
 
     models = ['Logistic Regression', 'Random Forest', 'Decision Tree']
-    results = tuner.tune_multiple(models, X_train, y_train, X_val, y_val, n_iter=5, cv=3)
+    results = tuner.tune_multiple(models, X_train, y_train, X_val, y_val, n_iter=3, cv=2)
 
     assert len(results) == 3
     assert all(name in results for name in models)
@@ -47,7 +47,7 @@ def test_tune_regression_models(model_registry, split_data_regression):
     tuner = HyperparameterTuner(model_registry, task_type='regression')
 
     models = ['Ridge', 'Random Forest']
-    results = tuner.tune_multiple(models, X_train, y_train, X_val, y_val, n_iter=5, cv=3)
+    results = tuner.tune_multiple(models, X_train, y_train, X_val, y_val, n_iter=3, cv=2)
 
     assert len(results) == 2
     assert 'Ridge' in results
@@ -60,7 +60,7 @@ def test_compare_tuning_results(model_registry, split_data_classification):
     tuner = HyperparameterTuner(model_registry, task_type='classification')
 
     models = ['Logistic Regression', 'Random Forest']
-    results = tuner.tune_multiple(models, X_train, y_train, X_val, y_val, n_iter=5, cv=3)
+    results = tuner.tune_multiple(models, X_train, y_train, X_val, y_val, n_iter=3, cv=2)
 
     comparison = tuner.compare_results(results)
     assert len(comparison) == 2

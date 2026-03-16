@@ -9,7 +9,7 @@ from src.models.trainers.classification import ClassificationTrainer
 
 
 
-def test_train_single_model(model_registry, split_data_classification):
+def test_train_single_model(model_registry, split_data_classification, mock_config):
     """Test training a single classification model."""
     X_train, X_val, y_train, y_val = split_data_classification
     trainer = ClassificationTrainer(model_registry)
@@ -23,7 +23,7 @@ def test_train_single_model(model_registry, split_data_classification):
     assert result.val_f1 > 0
 
 
-def test_train_multiple_models(model_registry, split_data_classification):
+def test_train_multiple_models(model_registry, split_data_classification, mock_config):
     """Test training multiple classification models."""
     X_train, X_val, y_train, y_val = split_data_classification
     trainer = ClassificationTrainer(model_registry)
@@ -35,7 +35,7 @@ def test_train_multiple_models(model_registry, split_data_classification):
     assert all(name in results for name in models)
 
 
-def test_compare_results(model_registry, split_data_classification):
+def test_compare_results(model_registry, split_data_classification, mock_config):
     """Test results comparison."""
     X_train, X_val, y_train, y_val = split_data_classification
     trainer = ClassificationTrainer(model_registry)
@@ -48,7 +48,7 @@ def test_compare_results(model_registry, split_data_classification):
     assert 'Val Accuracy' in comparison.columns
 
 
-def test_get_best_model(model_registry, split_data_classification):
+def test_get_best_model(model_registry, split_data_classification, mock_config):
     """Test best model selection."""
     X_train, X_val, y_train, y_val = split_data_classification
     trainer = ClassificationTrainer(model_registry)

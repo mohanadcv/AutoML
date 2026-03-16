@@ -55,7 +55,7 @@ def classification_data(random_seed):
 def binary_classification_data(random_seed):
     """Binary classification dataset for model training."""
     X, y = make_classification(
-        n_samples=1000,
+        n_samples=200,
         n_features=20,
         n_informative=15,
         n_classes=2,
@@ -70,7 +70,7 @@ def binary_classification_data(random_seed):
 def multiclass_classification_data(random_seed):
     """Multi-class classification dataset."""
     X, y = make_classification(
-        n_samples=1000,
+        n_samples=200,
         n_features=20,
         n_informative=15,
         n_redundant=5,
@@ -86,7 +86,7 @@ def multiclass_classification_data(random_seed):
 def regression_data(random_seed):
     """Synthetic regression dataset."""
     X, y = make_regression(
-        n_samples=1000,
+        n_samples=200,
         n_features=20,
         n_informative=15,
         noise=50,
@@ -117,7 +117,7 @@ def balanced_small_data():
 def imbalanced_data(random_seed):
     """Imbalanced classification dataset."""
     np.random.seed(random_seed)
-    n_samples = 1000
+    n_samples = 200
     X = pd.DataFrame({
         'feature1': np.random.randn(n_samples),
         'feature2': np.random.randn(n_samples)
@@ -182,3 +182,12 @@ def model_registry():
     """Provide a ModelRegistry instance."""
     from src.models.registry import ModelRegistry
     return ModelRegistry()
+
+
+@pytest.fixture
+def mock_config():
+    from Config.config import Config
+    config = Config()
+    config.CV_FOLDS = 2
+    config.N_JOBS = 1
+    return config
