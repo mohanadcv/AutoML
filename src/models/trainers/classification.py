@@ -21,6 +21,7 @@ import logging
 from dataclasses import dataclass
 import time
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
@@ -118,8 +119,16 @@ class ClassificationTrainer:
     ) -> ClassificationResult:
         """
         Train a single classification model (TRAIN + VAL only).
+        Automatically encodes string labels to integers.
         """
         start_time = time.time()
+
+        # Label Encoding
+        le = LabelEncoder()
+        y_train_encoded = le.fit_transform(y_train)
+        y_val_encoded = le.transform(y_val) if y_val is not None else None
+        # Store encoder in result for later decoding
+        self.last_label_encoder = le
 
         model = self.registry.get_model(
             model_name,
@@ -147,44 +156,45 @@ class ClassificationTrainer:
 
         # ---------------- Training metrics ----------------
         y_train_pred = model.predict(X_train_processed)
-        result.train_accuracy = accuracy_score(y_train, y_train_pred)
-        avg = 'binary' if len(np.unique(y_train)) == 2 else 'weighted'
-        result.train_precision = precision_score(y_train, y_train_pred, average=avg, zero_division=0)
-        result.train_recall = recall_score(y_train, y_train_pred, average=avg, zero_division=0)
-        result.train_f1 = f1_score(y_train, y_train_pred, average=avg, zero_division=0)
+        result.train_accuracy = accuracy_score(y_train_encoded, y_train_pred)
+        avg = 'binary' if len(np.unique(y_train_encoded)) == 2 else 'weighted'
+        result.train_precision = precision_score(y_train_encoded, y_train_pred, average=avg, zero_division=0)
+        result.train_recall = recall_score(y_train_encoded, y_train_pred, average=avg, zero_division=0)
+        result.train_f1 = f1_score(y_train_encoded, y_train_pred, average=avg, zero_division=0)
 
         # ---------------- Validation metrics ----------------
-        if X_val is not None and y_val is not None:
+        if X_val is not None and y_val_encoded is not None:
             y_val_pred = model.predict(X_val_processed)
-            result.val_accuracy = accuracy_score(y_val, y_val_pred)
-            result.val_precision = precision_score(y_val, y_val_pred, average=avg, zero_division=0)
-            result.val_recall = recall_score(y_val, y_val_pred, average=avg, zero_division=0)
-            result.val_f1 = f1_score(y_val, y_val_pred, average=avg, zero_division=0)
+            result.val_accuracy = accuracy_score(y_val_encoded, y_val_pred)
+            result.val_precision = precision_score(y_val_encoded, y_val_pred, average=avg, zero_division=0)
+            result.val_recall = recall_score(y_val_encoded, y_val_pred, average=avg, zero_division=0)
+            result.val_f1 = f1_score(y_val_encoded, y_val_pred, average=avg, zero_division=0)
 
             if hasattr(model, 'predict_proba'):
                 try:
-                    if len(np.unique(y_train)) == 2:
+                    if len(np.unique(y_train_encoded)) == 2:
                         y_val_proba = model.predict_proba(X_val_processed)[:, 1]
-                        result.val_roc_auc = roc_auc_score(y_val, y_val_proba)
+                        result.val_roc_auc = roc_auc_score(y_val_encoded, y_val_proba)
                     else:
                         y_val_proba = model.predict_proba(X_val_processed)
                         result.val_roc_auc = roc_auc_score(
-                            y_val, y_val_proba,
+                            y_val_encoded, y_val_proba,
                             multi_class='ovr',
                             average='weighted'
                         )
                 except Exception as e:
                     logger.debug(f"Could not calculate ROC AUC: {e}")
 
-            result.confusion_matrix = confusion_matrix(y_val, y_val_pred)
-            result.classification_report = classification_report(y_val, y_val_pred)
+            result.confusion_matrix = confusion_matrix(y_val_encoded, y_val_pred)
+            # Store classification report with original class names
+            result.classification_report = classification_report(y_val_encoded, y_val_pred, target_names=le.classes_)
 
         # ---------------- Cross-validation ----------------
         if run_cv:
             cv_folds = cv_folds or self.config.CV_FOLDS
             try:
                 cv_scores = cross_val_score(
-                    model, X_train_processed, y_train,
+                    model, X_train_processed, y_train_encoded,
                     cv=cv_folds, scoring='accuracy', n_jobs=self.config.N_JOBS
                 )
                 result.cv_scores = cv_scores.tolist()
