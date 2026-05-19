@@ -141,7 +141,7 @@ class ClassificationTrainer:
         X_train_processed = X_train.copy()
         X_val_processed = X_val.copy() if X_val is not None else None
 
-        model.fit(X_train_processed, y_train)
+        model.fit(X_train_processed, y_train_encoded)
         train_time = time.time() - start_time
 
         result = ClassificationResult(
