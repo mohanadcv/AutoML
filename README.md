@@ -110,6 +110,12 @@ The system is organized into 4 independent layers, each with a single responsibi
 |:----------------------------------------------:|
 |           ![](assets/demo/demo1.gif)           |
 
+**CLI:**
+
+| Complete workflow |
+|:----------------------------------------------:|
+|           ![](assets/demo/demo2.gif)           |
+
 
 **[📺 Watch the full demo on LinkedIn](https://linkedin.com/your-post)**
 
